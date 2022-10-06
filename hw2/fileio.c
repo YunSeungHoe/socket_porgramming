@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
         len++;
     printf("argv[0] len = %d\n", len);
 
-    fp = fopen("test.txt", "w");
+    fp = fopen(argv[1], "w");
 
     if(fp == NULL){
         printf("파일열기 실패\n");

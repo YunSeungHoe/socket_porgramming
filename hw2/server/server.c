@@ -5,19 +5,17 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#define BUF_SIZE 1024
 void error_handling(char *message);
 
 int main(int argc, char *argv[])
 {
-    int serv_sock;
-    int clnt_sock;
+    FILE *fp = NULL;
+    int serv_sock, clnt_sock, str_len;
     struct sockaddr_in serv_addr;
     struct sockaddr_in clnt_addr;
     socklen_t clnt_addr_size;
-
-
-    int str_len;
-    char message[30];
+    char file_name[BUF_SIZE];
 
     if(argc != 2){
         printf("Usage : %s <port>\n", argv[0]);
@@ -44,16 +42,32 @@ int main(int argc, char *argv[])
     if(clnt_sock == -1)
         error_handling("accept() error");
     //연결
-    str_len = read(clnt_sock, message, sizeof(message)-1);
+    str_len = read(clnt_sock, file_name, BUF_SIZE-1);
     if(str_len == -1)
         error_handling("read() error!");
+    printf("Message from client : %s \n", file_name);
     
-    printf("Message from client : %s \n", message);
-    
-    //해제
+    // 클라이언트로부터 받은 파일을 쓰기모드로 오픈 
+    fp = fopen(file_name, "w");
+    if(fp == NULL)
+        error_handling("fopen() error!");
+    while(1){
+        // 파일 내부에 내용을 받아서 파일에 작성해야함
+        ;
+    }
 
+    // 클라이언트가 전송하는 파일명의 길이를 확인하는 디버깅 용
+    // int name_len = 0;
+    // for(int i = 0; file_name[i] != '\0'; i++)
+    //     name_len++;
+    // printf("name size = %d", name_len);
+  
+  
+  
+    //해제
     close(clnt_sock);
     close(serv_sock);
+    fclose(fp);
     return 0;
 }
 
