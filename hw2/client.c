@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     if(connect(sock, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1)
         error_handling("connect() error!");
     //연결
-
     write(sock, message, sizeof(message));
     // 해제
     close(sock);
