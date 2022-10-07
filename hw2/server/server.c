@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in clnt_addr;
     socklen_t clnt_addr_size;
     char file_name[BUF_SIZE];
+    char message[BUF_SIZE];
 
     if(argc != 2){
         printf("Usage : %s <port>\n", argv[0]);
@@ -42,7 +43,8 @@ int main(int argc, char *argv[])
     if(clnt_sock == -1)
         error_handling("accept() error");
     //연결
-    str_len = read(clnt_sock, file_name, BUF_SIZE-1);
+    // 파일명의 크기도 클라이언트로 부터 받아야한다.
+    str_len = read(clnt_sock, file_name, 6);
     if(str_len == -1)
         error_handling("read() error!");
     printf("Message from client : %s \n", file_name);
@@ -51,10 +53,11 @@ int main(int argc, char *argv[])
     fp = fopen(file_name, "w");
     if(fp == NULL)
         error_handling("fopen() error!");
-    while(1){
-        // 파일 내부에 내용을 받아서 파일에 작성해야함
-        ;
+
+    while((str_len=read(clnt_sock, message, BUF_SIZE+1)) != 0){
+        printf("rev : %s\n", message);
     }
+            
 
     // 클라이언트가 전송하는 파일명의 길이를 확인하는 디버깅 용
     // int name_len = 0;
