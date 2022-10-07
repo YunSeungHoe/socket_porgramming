@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     socklen_t clnt_addr_size;
     char file_name[BUF_SIZE];
     char message[BUF_SIZE];
+    char name_len[BUF_SIZE];
 
     if(argc != 2){
         printf("Usage : %s <port>\n", argv[0]);
@@ -43,9 +44,12 @@ int main(int argc, char *argv[])
     if(clnt_sock == -1)
         error_handling("accept() error");
     //연결
+    if(read(clnt_sock, name_len, sizeof(char)+1) == -1)
+        error_handling("read() error!");
+    // printf("len = %d", (int)name_len[0]);
     // 파일명의 크기도 클라이언트로 부터 받아야한다.
-    str_len = read(clnt_sock, file_name, 6);
-    if(str_len == -1)
+    // str_len = read(clnt_sock, file_name, 6);
+    if(read(clnt_sock, file_name, (int)name_len[0]+1) == -1)
         error_handling("read() error!");
     printf("Message from client : %s \n", file_name);
     
@@ -54,8 +58,9 @@ int main(int argc, char *argv[])
     if(fp == NULL)
         error_handling("fopen() error!");
 
-    while((str_len=read(clnt_sock, message, BUF_SIZE+1)) != 0){
+    while((str_len=read(clnt_sock, message, BUF_SIZE)) != 0){
         printf("rev : %s\n", message);
+        fputs(message, fp);
     }
             
 

@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     int sock, file_size, fname_len = 0, send_len = 0, send_cnt = 0;
     struct sockaddr_in serv_addr;
     char message[BUF_SIZE];
+    char name_len[BUF_SIZE];
     // char message[] = "H";
     
     if(argc != 4){
@@ -44,6 +45,9 @@ int main(int argc, char *argv[])
         error_handling("connect() error!");
     //연결
     // printf("sizeof = %d\n", fname_len);
+    // 서버로 파일명의 크기를 전송
+    name_len[0] = (char)fname_len;
+    write(sock, name_len, sizeof(char)+1);
     // 서버로 파일명을 전송
     write(sock, argv[3], fname_len+1);
     // file size 저장
@@ -54,7 +58,9 @@ int main(int argc, char *argv[])
         fread(message, sizeof(char), sizeof(message)-1, fp);
 
         printf("message : %s\n", message);
-        send_cnt = write(sock, message, strlen(message));
+        send_cnt = write(sock, message, strlen(message)+1);
+        memset(&message, 0, sizeof(message));
+        printf("send_cnt = %d", send_cnt);
         send_len = send_len + send_cnt;
     }
     // 해제
