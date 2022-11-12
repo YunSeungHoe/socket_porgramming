@@ -1,0 +1,2 @@
+wiring Pi 컴파일
+: gcc -o test test.c -lwiringPi
