@@ -8,7 +8,6 @@ int main(){
     float distance;
 
     gpioInitialise();
-
     gpioSetMode(trig, PI_OUTPUT);
     gpioSetMode(echo, PI_INPUT);
     gpioWrite(trig, 0);
@@ -24,7 +23,7 @@ int main(){
             end = gpioTick();
         
         distance = (end - start) / 58.0f;
-        printf("diff: %u, distance )cm) : %f\n", \
+        printf("diff: %u, distance (cm) : %f\n", \
                 end - start, distance);
 
         gpioWrite(trig, 0);
