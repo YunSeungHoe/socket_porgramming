@@ -62,6 +62,7 @@ void *send_msg(void * arg)
         }
         sprintf(name_msg, "%s %s", name, msg);      // name_msg 에 [name] msg 저장 
         write(sock, name_msg, strlen(name_msg));    // name_msg 를 서버에 전송
+        // write(sock, name_msg, strlen(name_msg));    // name_msg 를 서버에 전송
     }
     return NULL;
 }
