@@ -10,8 +10,8 @@
 #define BUF_SIZE 100
 #define MAX_CLNT 256
 
-void *handle_clnt(void *arg);
-void *send_msg(char *msg, int len);
+void *handle_clnt(void * arg);
+void *send_msg(char * msg, int len);
 void error_handling(char *message);
 
 int clnt_cnt = 0;           // 데이터 영역 공유 변수
@@ -45,52 +45,55 @@ int main(int argc, char *argv[]){
 
     while(1){
         clnt_adr_sz = sizeof(clnt_adr);
-        clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_adr, &clnt_adr_sz);   // 클라이언트 접속 대기
+        clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_adr, &clnt_adr_sz);
 
-        pthread_mutex_lock(&mutx);                  // mutex lock
-        clnt_socks[clnt_cnt++] = clnt_sock;         // critical section 
-        pthread_mutex_unlock(&mutx);                // mutex unlock
+        pthread_mutex_lock(&mutx);
+        clnt_socks[clnt_cnt++] = clnt_sock;
+        pthread_mutex_unlock(&mutx);
 
-        pthread_create(&t_id, NULL, handle_clnt, (void*)&clnt_sock);                // 실제 thread 실행 함수
-        pthread_detach(t_id);                       // thread 리소스 정리
-        printf("Connected client IP: %s \n", inet_ntoa(clnt_adr.sin_addr));         // client IP를 출력
+        pthread_create(&t_id, NULL, handle_clnt, (void*)&clnt_sock);
+        pthread_detach(t_id);
+        printf("connect client ip %s \n", inet_ntoa(clnt_adr.sin_addr));
     }
     close(serv_sock);
     return 0;
 }
 
-void *handle_clnt(void *arg){
+void *handle_clnt(void * arg){
     int clnt_sock = *((int*)arg);
     int str_len = 0, i;
     char msg[BUF_SIZE];
 
-    while((str_len = read(clnt_sock, msg, sizeof(msg))) != 0) // read 함수가 0을 리턴하는 경우 : 파일의 끝을 만나면 0
+    while(str_len = read(clnt_sock, msg, sizeof(msg)) != 0);
         send_msg(msg, str_len);
-
+    
     pthread_mutex_lock(&mutx);
     for(i = 0; i < clnt_cnt; i++){
-        if(clnt_sock==clnt_socks[i]){
+        if(clnt_sock == clnt_socks[i]){
             while(i++ < clnt_socks[i])
-                clnt_socks[i]=clnt_socks[i+1];
+                clnt_socks[i] = clnt_socks[i+1];
             break;
         }
     }
     clnt_cnt--;
     pthread_mutex_unlock(&mutx);
-
     close(clnt_sock);
     return NULL;
 }
 void *send_msg(char * msg, int len){
-    int i;
-    
     pthread_mutex_lock(&mutx);
-    for(i = 0; i < clnt_cnt; i++)
+    for(int i = 0; i < len; i++)
         write(clnt_socks[i], msg, len);
-    pthread_mutex_unlock(&mutx);
+    pthread_mutex_unlock(&mutx);    
+
 }
+
 void error_handling(char* message){
     fputs(message, stderr);
     fputc('\n', stderr);
     exit(1);
 }
+
+// read(clnt_cnt, msg, sizeof(msg));
+// write(clnt_cnt, msg, sizeof(msg));
+// accept(serv_sock, (struct sockaddr*)&clnt_adr, &clnt_adr_sz);

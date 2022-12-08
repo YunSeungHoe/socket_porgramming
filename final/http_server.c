@@ -9,9 +9,9 @@
 #define BUF_SIZE 1024
 #define SMALL_BUF 100
 
-void* request_handler(void * arg);
+void *request_handler(void *arg);
 void send_data(FILE *fd, char *ct, char *file_name);
-char* content_type(char * file);
+char *content_type(char *file);
 void send_error(FILE *fp);
 void error_handling(char *message);
 
@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
     }
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
-    memset(&serv_adr, 0, sizeof(serv_adr));     
+
+    memset(&serv_adr, 0, sizeof(serv_adr));
     serv_adr.sin_family = AF_INET;       
     serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_adr.sin_port = htons(atoi(argv[1]));
@@ -120,7 +121,7 @@ void send_data(FILE *fp, char *ct, char *file_name)
     fclose(fp);
 }
 
-char* content_type(char * file)
+char *content_type(char *file)
 {
     char extension[SMALL_BUF];
     char file_name[SMALL_BUF];

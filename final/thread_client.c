@@ -9,8 +9,8 @@
 #define BUF_SIZE 100
 #define NAME_SIZE 20
 
-void * send_msg(void * arg);
-void * recv_msg(void * arg);
+void *send_msg(void *arg); // thread가 실행하는 함수는 void * 로 선언 추가로, 인자는 void * 로 선언
+void *recv_msg(void *arg);
 void error_handling(char *message);
 
 char name[NAME_SIZE] = "[DEFAULT]"; // 자신의 이름을 저장
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 void *send_msg(void * arg)
 {
     int sock = *((int*)arg);                        // 들어오는 인자 (void*)&sock => void *arg => *((int*)arg)
-    char name_msg[NAME_SIZE*BUF_SIZE];
+    char name_msg[NAME_SIZE+BUF_SIZE];
     while(1)
     {
         fgets(msg, BUF_SIZE, stdin);
@@ -69,8 +69,8 @@ void *send_msg(void * arg)
 
 void *recv_msg(void * arg)
 {
-    int sock=*((int*)arg);
-    char name_msg[NAME_SIZE*BUF_SIZE];
+    int sock = *((int*)arg);
+    char name_msg[NAME_SIZE+BUF_SIZE];
     int str_len;
     while(1)
     {

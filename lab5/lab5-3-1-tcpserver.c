@@ -35,7 +35,7 @@ int main(void){
     }
     
     // 2) setting server socket structure
-    memset((char *) &serv_addr, 0x00, sizeof(serv_addr));
+    memset(&serv_addr, 0x00, sizeof(serv_addr));
     serv_addr.sin_family        = AF_INET;
     serv_addr.sin_addr.s_addr   = htonl(INADDR_ANY);
     serv_addr.sin_port          = htons(PORTNUM);
